@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<ul class="sidebar-menu tree" data-widget="tree" dir="rtl">
+		<li><p:link href="/index.xhtml" onclick="clearBreadCrumbs()">
+				<i class="fa fa-home"></i>
+				<span>الرئيسية</span>
+			</p:link></li>
+		<li class="header">الإعدادات</li>
+		<li><p:link href="/settings/projects.xhtml">
+				<i class="fa fa-bar-chart"></i>
+				<span>المشاريع</span>
+			</p:link></li>
+		<li><p:link href="/settings/centers.xhtml">
+				<i class="fa fa-suitcase"></i>
+				<span>مراكز العمل</span>
+			</p:link></li>
+		<li><p:link href="/settings/accounts.xhtml">
+				<i class="fa fa-bank"></i>
+				<span>الحسابات البنكية</span>
+			</p:link></li>
+
+		<li class="treeview">
+			<a href="#"> 
+				<i class="fa fa-cogs"></i>
+				<span>الإعدادات</span> 
+				<span class="pull-right-container" style="right: auto;"> <i
+					class="fa fa-angle-left pull-right"></i>
+				</span>
+			</a>
+			<ul class="treeview-menu">
+				<li><p:link href="/settings/projects.xhtml">
+						<i class="fa fa-bar-chart"></i>
+						<span>المشاريع</span>
+					</p:link>
+				</li>
+				<li><p:link href="/settings/centers.xhtml">
+				<i class="fa fa-suitcase"></i>
+				<span>مراكز العمل</span>
+			</p:link></li>
+		<li><p:link href="/settings/accounts.xhtml">
+				<i class="fa fa-bank"></i>
+				<span>الحسابات البنكية</span>
+			</p:link></li>
+			</ul></li>
+
+	</ul>
+</ui:composition>
