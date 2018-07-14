@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -14,37 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-@Entity
-@Table(name="users_roles", indexes={@Index(name="usersRolesRolesFk", columnList="role_id"), @Index(name="usersRolesUsersFk", columnList="user_id")})
+//@Entity
+//@Table(name="users_roles", indexes={@Index(name="usersRolesRolesFk", columnList="role_id"), @Index(name="usersRolesUsersFk", columnList="user_id")})
 public class UsersRoles implements Serializable {
-
-    /** Primary key. */
-    protected static final String PK = "UsersRolesPrimary";
-
-    /**
-     * The optimistic lock. Available via standard bean get/set operations.
-     */
-    @Version
-    @Column(name="LOCK_FLAG")
-    private Integer lockFlag;
-
-    /**
-     * Access method for the lockFlag property.
-     *
-     * @return the current value of the lockFlag property
-     */
-    public Integer getLockFlag() {
-        return lockFlag;
-    }
-
-    /**
-     * Sets the value of the lockFlag property.
-     *
-     * @param aLockFlag the new value of the lockFlag property
-     */
-    public void setLockFlag(Integer aLockFlag) {
-        lockFlag = aLockFlag;
-    }
 
     @ManyToOne(optional=false)
     @JoinColumn(name="role_id", nullable=false)

@@ -12,39 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 @Entity(name="roles")
 public class Roles implements Serializable {
-
-    /** Primary key. */
-    protected static final String PK = "id";
-
-    /**
-     * The optimistic lock. Available via standard bean get/set operations.
-     */
-    @Version
-    @Column(name="LOCK_FLAG")
-    private Integer lockFlag;
-
-    /**
-     * Access method for the lockFlag property.
-     *
-     * @return the current value of the lockFlag property
-     */
-    public Integer getLockFlag() {
-        return lockFlag;
-    }
-
-    /**
-     * Sets the value of the lockFlag property.
-     *
-     * @param aLockFlag the new value of the lockFlag property
-     */
-    public void setLockFlag(Integer aLockFlag) {
-        lockFlag = aLockFlag;
-    }
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -54,8 +27,8 @@ public class Roles implements Serializable {
     private String name;
     @Column(length=256)
     private String description;
-    @OneToMany(mappedBy="roles")
-    private Set<UsersRoles> usersRoles;
+    @ManyToMany(mappedBy="roles")
+    private Set<Users> users;
 
     /** Default constructor. */
     public Roles() {
@@ -121,18 +94,18 @@ public class Roles implements Serializable {
      *
      * @return the current value of usersRoles
      */
-    public Set<UsersRoles> getUsersRoles() {
-        return usersRoles;
-    }
-
-    /**
-     * Setter method for usersRoles.
-     *
-     * @param aUsersRoles the new value for usersRoles
-     */
-    public void setUsersRoles(Set<UsersRoles> aUsersRoles) {
-        usersRoles = aUsersRoles;
-    }
+//    public Set<UsersRoles> getUsersRoles() {
+//        return usersRoles;
+//    }
+//
+//    /**
+//     * Setter method for usersRoles.
+//     *
+//     * @param aUsersRoles the new value for usersRoles
+//     */
+//    public void setUsersRoles(Set<UsersRoles> aUsersRoles) {
+//        usersRoles = aUsersRoles;
+//    }
 
     /**
      * Compares the key for this instance with another Roles.
@@ -209,5 +182,13 @@ public class Roles implements Serializable {
         ret.put("id", getId());
         return ret;
     }
+
+	public Set<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<Users> users) {
+		this.users = users;
+	}
 
 }

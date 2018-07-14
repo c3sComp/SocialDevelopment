@@ -7,47 +7,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name="users", indexes={@Index(name="users_username_IX", columnList="username", unique=true)})
 public class Users implements Serializable {
-
-    /** Primary key. */
-//    protected static final String PK = "id";
-//
-//    /**
-//     * The optimistic lock. Available via standard bean get/set operations.
-//     */
-//    @Version
-//    @Column(name="LOCK_FLAG")
-//    private Integer lockFlag;
-//
-//    /**
-//     * Access method for the lockFlag property.
-//     *
-//     * @return the current value of the lockFlag property
-//     */
-//    public Integer getLockFlag() {
-//        return lockFlag;
-//    }
-//
-//    /**
-//     * Sets the value of the lockFlag property.
-//     *
-//     * @param aLockFlag the new value of the lockFlag property
-//     */
-//    public void setLockFlag(Integer aLockFlag) {
-//        lockFlag = aLockFlag;
-//    }
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -59,8 +33,9 @@ public class Users implements Serializable {
     private String password;
     @Column(length=256)
     private String name;
-//    @OneToMany(mappedBy="users")
-//    private Set<UsersRoles> usersRoles;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Roles> roles;
 
     /** Default constructor. */
     public Users() {
@@ -232,5 +207,13 @@ public class Users implements Serializable {
         ret.put("id", getId());
         return ret;
     }
+
+	public Set<Roles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Roles> roles) {
+		this.roles = roles;
+	}
 
 }
