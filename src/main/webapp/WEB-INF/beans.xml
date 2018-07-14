@@ -38,12 +38,18 @@
 
 	<!-- service -->
 	<bean id="commonService" class="com.c3s.core.service.CommonService" >
-	<property name="commonDao" ref="commonDao"></property>
+		<property name="commonDao" ref="commonDao"></property>
+	</bean>
+	<bean id="financialService" class="com.c3s.core.service.FinancialService" >
+		<property name="financialDao" ref="financialDao"></property>
 	</bean>
 
 	<!-- dao -->
 	<bean id="commonDao" class="com.c3s.core.dao.CommonDao" >
-	<property name="sessionFactory" ref="sessionFactory"></property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+	<bean id="financialDao" class="com.c3s.core.dao.FinancialDao" >
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>	
 	
 </beans>

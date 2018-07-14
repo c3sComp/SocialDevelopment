@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        #{adm['financialDocument.credit']}
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{financialDocumentBean.id}" converter="javax.faces.Long"/>
+            <f:viewAction action="#{financialDocumentBean.init}"/>
+<!--             <f:event type="preRenderView" listener="#{financialDocumentBean.init}"/> -->
+        </f:metadata>
+
+        <adm:breadcrumb title="#{empty financialDocumentBean.id ? 'سند قبض' : 'سند قبض '.concat(financialDocumentBean.id)}" link="finance/financial-document-form.jsf?id=#{financialDocumentBean.id}"/>
+        <h:form id="form" prependId="false">
+            <p:focus rendered="#{empty financialDocumentBean.id}"/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        
+                        <p:commandButton value="#{adm['back']}" immediate="true"
+                                         action="financial-document-list?faces-redirect=true"
+                                         process="@this"
+                                         icon="fa fa-reply"/>
+                                         <p:spacer width="5"/>
+                        <p:commandButton value="#{adm['delete']}" action="#{financialDocumentBean.remove}" process="@this"
+                                         rendered="#{not(financialDocumentBean.isNew())}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="#{adm['confirmation']}"
+								message="ه#{adm['confirmation.delete']}" icon="ui-icon-danger" />
+                        </p:commandButton>
+                         <p:spacer width="5" rendered="#{financialDocumentBean.isNew()}"/>
+                         <p:commandButton value="#{adm['clear']}" action="#{financialDocumentBean.clearData}" process="@this"
+                                         icon="fa fa-refresh" 
+                                         update="@form" rendered="#{financialDocumentBean.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not(financialDocumentBean.isNew())}"/>
+
+                        
+                        <p:commandButton value="#{adm['save']}" action="#{financialDocumentBean.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                       
+                        
+                    </div>
+                    <p:splitButton value="#{adm['save']}" action="#{financialDocumentBean.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="#{adm['clear']}" action="#{financialDocumentBean.clearData}"
+                                    process="@this" update="@form" rendered="#{financialDocumentBean.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem value="#{adm['delete']}" action="#{financialDocumentBean.remove}" process="@this"
+                                    rendered="#{not(financialDocumentBean.isNew())}" icon="fa fa-trash"
+                                 >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="financial-document-list?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                    </p:splitButton>
+
+                    <p:separator/>
+
+                    <div class="ui-g ui-fluid" style="float:right;direction: rtl;">
+                        <div class="ui-sm-12 ui-md-2 ui-lg-1">
+                            <p:outputLabel for="id" value="#{adm['financialDocument.credit.noDocument']}"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-4 ui-lg-5" >
+                            <p:inputText id="id" value="#{financialDocumentBean.financialDocument.docNo}" size="4"
+                                         readonly="true" styleClass="form-control" style="width: 100%"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-2 ui-lg-1">
+                            <p:outputLabel value="#{adm['financialDocument.credit.owner']}" for="owner"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-4 ui-lg-5" >
+                            <p:inputText id="owner" value="#{financialDocumentBean.financialDocument.docOwner}"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-2 ui-lg-1">
+                            <p:outputLabel value="#{adm['financialDocument.credit.amount']}" for="amount"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-4 ui-lg-5" >
+                            <p:inputNumber id="amount" value="#{financialDocumentBean.financialDocument.amount}"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-2 ui-lg-1">
+                            <p:outputLabel value="#{adm['financialDocument.credit.date']}" for="docDate"/>
+                        </div>
+                        <div class="ui-sm-12 ui-md-4 ui-lg-5" >
+	                        <p:calendar id="docDate" value="#{financialDocumentBean.financialDocument.docDate}" showOn="button" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>
