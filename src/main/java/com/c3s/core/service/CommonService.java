@@ -2,15 +2,10 @@ package com.c3s.core.service;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.c3s.core.dao.ICommonDao;
-import com.c3s.core.model.Users;
 
 @Service
 public class CommonService implements ICommonService,Serializable {
@@ -26,11 +21,19 @@ public class CommonService implements ICommonService,Serializable {
 		this.commonDao = commonDao;
 	}
 
-	@Transactional
 	@Override
-	public Users loadUser() {
-		return commonDao.loadUser();
+	public void saveModel(Object model) {
+		commonDao.saveModel(model);
 	}
-	
+
+	@Override
+	public void updateModel(Object model) {
+		commonDao.updateModel(model);
+	}
+
+	@Override
+	public void deleteModel(Object model) {
+		commonDao.deleteModel(model);
+	}	
 	
 }

@@ -1,41 +1,192 @@
 package com.c3s.core.bean;
 
-import org.omnifaces.cdi.ViewScoped;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-
-import com.c3s.core.infra.model.Filter;
-import com.c3s.core.model.Car;
-import com.c3s.core.model.Users;
-import com.c3s.core.service.CarService;
-import com.c3s.core.service.ICommonService;
-import com.c3s.template.exception.BusinessException;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import static com.c3s.core.util.Utils.addDetailMessage;
+import static com.c3s.template.util.Assert.has;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+
+import org.omnifaces.util.Faces;
+
+import com.c3s.core.infra.model.Filter;
+import com.c3s.core.model.FinancialDocument;
+import com.c3s.core.service.ICommonService;
+import com.c3s.core.service.IFinancialService;
+import com.c3s.core.util.FinancialDocType;
+import com.c3s.template.exception.BusinessException;
 
 /**
- * Created by rmpestano on 12/02/17.
+ * This bean will manage the credit and debit financial documents
+ * 
+ * @author C3S
+ *
  */
+@SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
 public class FinancialDocumentBean implements Serializable {
 
-    @Inject
-    CarService carService;
-    @ManagedProperty(value = "#{commonService}")
-    private ICommonService commonService;
+	@ManagedProperty(value = "#{commonService}")
+	private ICommonService commonService;
+	@ManagedProperty(value = "#{financialService}")
+	private IFinancialService financialService;
+	private List<FinancialDocument> documents;
+	private Filter<FinancialDocument> filter1 = new Filter<>(new FinancialDocument());
+	private List<FinancialDocument> selectedDocuments;
+	private List<FinancialDocument> filteredDocuments;
+	private FinancialDocument financialDocument;
+	private Integer docType;
+	private Integer id;
 
-    public ICommonService getCommonService() {
+	/**
+	 * Init method for search screen
+	 */
+
+	public void initDataModel() {
+		docType = FinancialDocType.CREDIT.getType();
+		documents = financialService.loadFinancialDocuments(docType);
+	}
+
+	/**
+	 * Load selected document by his id
+	 * 
+	 * @param id
+	 */
+	public void findDocumentByNo(Integer id) {
+		if (id == null) {
+			throw new BusinessException("Provide Car ID to load");
+		}
+		FinancialDocument document = documents.stream().filter(doc -> doc.getDocNo().equals(id)).findFirst()
+				.orElseThrow(() -> new BusinessException("Car not found with id " + id));
+		selectedDocuments.add(document);
+	}
+
+	/**
+	 * Delete selected document from list
+	 */
+	public void delete() {
+
+	}
+	
+	/**
+	 * Redirect to consult page
+	 * @param id
+	 * @return
+	 */
+	public String goToAdd(Integer id) {
+		return "/finance/financial-document-form.xhtml?id="+id+"&faces-redirect=true";
+	}
+
+	/**
+	 * View action for add or update form
+	 */
+	public void init() {
+		if (Faces.isAjaxRequest()) {
+			return;
+		}
+		if (has(id)) {
+			financialDocument = financialService.loadFinancialDocumentById(id);
+		} else {
+			financialDocument = new FinancialDocument();
+		}
+	}
+	   
+	/**
+	 * Save new financial document
+	 */
+	public void save() {
+		String msg;
+		if (financialDocument.getId() == null) {
+			commonService.saveModel(financialDocument);
+			msg = "financialDocument " + financialDocument.getDocOwner() + " created successfully";
+		} else {
+			commonService.updateModel(financialDocument);
+			msg = "Car " + financialDocument.getDocOwner() + " updated successfully";
+		}
+		addDetailMessage(msg);
+	}
+
+	/**
+	 * Reset fields
+	 */
+	public void clearData() {
+		financialDocument = new FinancialDocument();
+		id = null;
+	}
+
+	/**
+	 * Check if add or update mode
+	 * 
+	 * @return
+	 */
+	public boolean isNew() {
+		return financialDocument == null || financialDocument.getId() == null;
+	}
+
+	/**
+	 * Delete financial document
+	 * 
+	 * @throws IOException
+	 */
+	public void remove() throws IOException {
+		if (has(financialDocument) && has(financialDocument.getId())) {
+			commonService.deleteModel(financialDocument);
+			addDetailMessage("financialDocument " + financialDocument.getDocOwner() + " removed successfully");
+			Faces.getFlash().setKeepMessages(true);
+			Faces.redirect("financial-document-list.xhtml");
+		}
+	}
+
+	/**
+	 * Getters and setters
+	 */
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public List<FinancialDocument> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<FinancialDocument> documents) {
+		this.documents = documents;
+	}
+
+	public Filter<FinancialDocument> getFilter1() {
+		return filter1;
+	}
+
+	public void setFilter1(Filter<FinancialDocument> filter1) {
+		this.filter1 = filter1;
+	}
+
+	public List<FinancialDocument> getSelectedDocuments() {
+		return selectedDocuments;
+	}
+
+	public void setSelectedDocuments(List<FinancialDocument> selectedDocuments) {
+		this.selectedDocuments = selectedDocuments;
+	}
+
+	public List<FinancialDocument> getFilteredDocuments() {
+		return filteredDocuments;
+	}
+
+	public void setFilteredDocuments(List<FinancialDocument> filteredDocuments) {
+		this.filteredDocuments = filteredDocuments;
+	}
+
+	public ICommonService getCommonService() {
 		return commonService;
 	}
 
@@ -43,116 +194,27 @@ public class FinancialDocumentBean implements Serializable {
 		this.commonService = commonService;
 	}
 
-	Integer id;
+	public FinancialDocument getFinancialDocument() {
+		return financialDocument;
+	}
 
-    LazyDataModel<Car> cars;
+	public void setFinancialDocument(FinancialDocument financialDocument) {
+		this.financialDocument = financialDocument;
+	}
 
-    Filter<Car> filter = new Filter<>(new Car());
+	public Integer getDocType() {
+		return docType;
+	}
 
-    List<Car> selectedCars; //cars selected in checkbox column
+	public void setDocType(Integer docType) {
+		this.docType = docType;
+	}
 
-    List<Car> filteredValue;// datatable filteredValue attribute (column filters)
+	public IFinancialService getFinancialService() {
+		return financialService;
+	}
 
-    @PostConstruct
-    public void initDataModel() {
-    	System.out.println("commonService:"+commonService);
-    	Users user = commonService.loadUser();
-    	System.out.println("user :"+user.getName());
-        cars = new LazyDataModel<Car>() {
-            @Override
-            public List<Car> load(int first, int pageSize,
-                                  String sortField, SortOrder sortOrder,
-                                  Map<String, Object> filters) {
-                com.c3s.core.infra.model.SortOrder order = null;
-                if (sortOrder != null) {
-                    order = sortOrder.equals(SortOrder.ASCENDING) ? com.c3s.core.infra.model.SortOrder.ASCENDING
-                            : sortOrder.equals(SortOrder.DESCENDING) ? com.c3s.core.infra.model.SortOrder.DESCENDING
-                            : com.c3s.core.infra.model.SortOrder.UNSORTED;
-                }
-                filter.setFirst(first).setPageSize(pageSize)
-                        .setSortField(sortField).setSortOrder(order)
-                        .setParams(filters);
-                List<Car> list = carService.paginate(filter);
-                setRowCount((int) carService.count(filter));
-                return list;
-            }
-
-            @Override
-            public int getRowCount() {
-                return super.getRowCount();
-            }
-
-            @Override
-            public Car getRowData(String key) {
-                return carService.findById(new Integer(key));
-            }
-        };
-    }
-
-    public void clear() {
-        filter = new Filter<Car>(new Car());
-    }
-
-    public List<String> completeModel(String query) {
-        List<String> result = carService.getModels(query);
-        return result;
-    }
-
-    public void findCarById(Integer id) {
-        if (id == null) {
-            throw new BusinessException("Provide Car ID to load");
-        }
-        selectedCars.add(carService.findById(id));
-    }
-
-    public void delete() {
-    	
-        int numCars = 0;
-        for (Car selectedCar : selectedCars) {
-            numCars++;
-            carService.remove(selectedCar);
-        }
-        selectedCars.clear();
-        addDetailMessage(numCars + " cars deleted successfully!");
-    }
-
-    public List<Car> getSelectedCars() {
-        return selectedCars;
-    }
-
-    public List<Car> getFilteredValue() {
-        return filteredValue;
-    }
-
-    public void setFilteredValue(List<Car> filteredValue) {
-        this.filteredValue = filteredValue;
-    }
-
-    public void setSelectedCars(List<Car> selectedCars) {
-        this.selectedCars = selectedCars;
-    }
-
-    public LazyDataModel<Car> getCars() {
-        return cars;
-    }
-
-    public void setCars(LazyDataModel<Car> cars) {
-        this.cars = cars;
-    }
-
-    public Filter<Car> getFilter() {
-        return filter;
-    }
-
-    public void setFilter(Filter<Car> filter) {
-        this.filter = filter;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setFinancialService(IFinancialService financialService) {
+		this.financialService = financialService;
+	}
 }

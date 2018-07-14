@@ -1,9 +1,28 @@
 package com.c3s.core.dao;
 
-import com.c3s.core.model.Users;
-
+/**
+ * This interface contains common DAOs for all modules
+ * @author C3S
+ *
+ */
 public interface ICommonDao {
 
-	Users loadUser();
+	/**
+	 * Save a mapped entity
+	 * @param model
+	 */
+	public void saveModel(Object model);
+
+	/**
+	 * update a mapped entity
+	 * @param model
+	 */
+	public void updateModel(Object model);
+
+	/**
+	 * delete a mapped entity
+	 * @param model
+	 */
+	public void deleteModel(Object model);
 
 }

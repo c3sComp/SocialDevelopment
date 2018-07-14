@@ -55,9 +55,6 @@ public class CarListMB implements Serializable {
 
     @PostConstruct
     public void initDataModel() {
-    	System.out.println("commonService:"+commonService);
-    	Users user = commonService.loadUser();
-    	System.out.println("user :"+user.getName());
         cars = new LazyDataModel<Car>() {
             @Override
             public List<Car> load(int first, int pageSize,
