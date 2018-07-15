@@ -1,28 +1,28 @@
 package com.c3s.core.dao;
 
-/**
- * This interface contains common DAOs for all modules
- * @author C3S
- *
- */
+import java.util.List;
+
+import com.c3s.core.model.Finance;
+import com.c3s.core.model.Projects;
+import com.c3s.core.model.SocialCategory;
+import com.c3s.core.model.Users;
+
 public interface ICommonDao {
 
-	/**
-	 * Save a mapped entity
-	 * @param model
-	 */
-	public void saveModel(Object model);
+	Users loadUser();
 
-	/**
-	 * update a mapped entity
-	 * @param model
-	 */
-	public void updateModel(Object model);
+	List<Projects> loadProject();
 
-	/**
-	 * delete a mapped entity
-	 * @param model
-	 */
-	public void deleteModel(Object model);
+	List<Finance> loadFinancialClause();
+
+	void deletObject(Object object);
+
+	void saveObject(Object object);
+
+	List<SocialCategory> loadSocialCategories();
+
+	int loadCurrentFinYear();
+
+	void updateObject(Object object);
 
 }
